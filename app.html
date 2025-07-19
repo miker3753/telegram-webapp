@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Покупка номеров</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      color: #333;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .services {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .service {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px;
+      width: 130px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .service:hover {
+      transform: scale(1.05);
+    }
+
+    .flag-list {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .flag {
+      background: #fff;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 90%;
+      cursor: pointer;
+    }
+
+    .timer {
+      text-align: center;
+      margin-top: 30px;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #0088cc;
+      margin-top: 10px;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    .cancel-button {
+      margin-top: 15px;
+      background: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Покупка номеров для разных сервисов</h1>
+
+  <div class="services">
+    <div class="service" onclick="selectService('Telegram')">📨 Telegram</div>
+    <div class="service" onclick="selectService('Google')">🔍 Google</div>
+    <div class="service" onclick="selectService('Instagram')">📸 Instagram</div>
+    <div class="service" onclick="selectService('ChatGPT')">🤖 ChatGPT</div>
+  </div>
+
+  <div class="flag-list" id="flagList">
+    <div class="flag" onclick="selectCountry('USA', 1.5)">🇺🇸 USA - $1.5</div>
+    <div class="flag" onclick="selectCountry('Great Britain', 2.5)">🇬🇧 Great Britain - $2.5</div>
+    <div class="flag" onclick="selectCountry('Canada', 1.2)">🇨🇦 Canada - $1.2</div>
+    <div class="flag" onclick="selectCountry('Ukraine', 2.3)">🇺🇦 Ukraine - $2.3</div>
+    <div class="flag" onclick="selectCountry('Spain', 5.0)">🇪🇸 Spain - $5</div>
+    <div class="flag" onclick="selectCountry('Russia', 3.5)">🇷🇺 Russia - $3.5</div>
+  </div>
+
+  <div class="timer" id="timerBlock">
+    <h2>Ваш номер придёт в течение 20 минут</h2>
+    <div id="countdown">20:00</div>
+    <div class="progress-bar" id="progressBar"></div>
+    <button class="cancel-button" onclick="cancelOrder()">Отменить</button>
+  </div>
+
+  <script>
+    let selectedService = "";
+    let countdownInterval;
+    let timeLeft = 1200; // 20 минут в секундах
+
+    function selectService(service) {
+      selectedService = service;
+      document.getElementById("flagList").style.display = "flex";
+    }
+
+    function selectCountry(country, price) {
+      // Здесь можно сделать проверку баланса через Telegram WebApp API
+      alert(Сервис: ${selectedService}\nСтрана: ${country}\nЦена: $${price});
+      startTimer();
+    }
+
+    function startTimer() {
+      document.getElementById("flagList").style.display = "none";
+      document.getElementById("timerBlock").style.display = "block";
+      timeLeft = 1200;
+      updateTimer();
+      countdownInterval = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          document.getElementById("countdown").innerText = "Время вышло";
+          document.getElementById("progressBar").style.width = "0%";
+        }
+      }, 1000);
+    }
+
+    function updateTimer() {
+      const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+      const seconds = String(timeLeft % 60).padStart(2, "0");
+      document.getElementById("countdown").innerText = ${minutes}:${seconds};
+      const percentage = (timeLeft / 1200) * 100;
+      document.getElementById("progressBar").style.width = percentage + "%";
+    }
+
+    function cancelOrder() {
+      clearInterval(countdownInterval);
+      alert("Заказ отменён, средства возвращены.");
+      document.getElementById("timerBlock").style.display = "none";
+    }
+  </script>
+</body>
+</html>
